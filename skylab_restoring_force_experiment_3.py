@@ -33,14 +33,9 @@ time = t
 xForce = np.array(origData["x-force"])
 zForce = np.array(origData["z-force"])
 
-attributeNames = ["time", "xForce", "zForce"]
-
-X = np.hstack((time, xForce, zForce))
-
 z = np.array(origTimestamps["z"])
 vp_start = np.array(origTimestamps["video_time_plateau_start"])
 vp_end = np.array(origTimestamps["video_time_plateau_end"])
-z = np.array(origTimestamps["z"])
 
 auto_plateaus, dF, d2F = find_plateaus(zForce)
 auto_plateaus = np.insert(auto_plateaus, 0, [vp_start[0]*100, vp_end[0]*100], axis=0)
@@ -81,7 +76,7 @@ plt.figure()
 plt.plot(z,force,'-+')
 plt.xlabel('z [mm]')
 plt.ylabel('Restoring force [N]')
-plt.savefig('experiment-3-force.pdf')
+plt.savefig('./plots/experiment-3-force.pdf')
 
 # %%
 def correct_for_N_vaporisation(t, zForce):   
@@ -123,5 +118,5 @@ plt.ylabel('Restoring force [N]')
 plt.savefig('./plots/experiment-3-corrected-force.pdf')
 
 # %% Calculate Spring constant
-kz = 1000*np.mean(np.gradient(corrected_force[0:5],z[0:5]))
-print("stiffness kz = " + str(round(kz,-3)) + " N/m")
+kz = np.mean(np.gradient(corrected_force[0:5],z[0:5]))
+print("stiffness kz = " + str(round(kz)) + " N/mm")

@@ -6,7 +6,7 @@ Created on Tue Jun 22 08:00:00 2021
 @author: runehoejlund
 """
 
-def find_plateaus(F, min_length=200, smoothing=25):
+def find_plateaus(F, min_length=200, tolerance = 0.75, smoothing=25):
     '''
     Finds plateaus of signal using second derivative of F.
 
@@ -14,11 +14,13 @@ def find_plateaus(F, min_length=200, smoothing=25):
     ----------
     F : Signal.
     min_length: Minimum length of plateau.
+    tolerance: Number between 0 and 1 indicating how tolerant the requirement of constant slope of the plateau is.
     smoothing: Size of uniform filter 1D applied to F and its derivatives.
-
+    
     Returns
     -------
     plateaus: array of plateau left and right edges pairs
+    dF: (smoothed) derivative of F
     d2F: (Smoothed) Second Derivative of F
     '''
     import numpy as np
@@ -41,7 +43,7 @@ def find_plateaus(F, min_length=200, smoothing=25):
     
     # Find ranges where second derivative is zero
     # Values under eps are assumed to be zero.
-    eps = np.quantile(abs(d2F),0.75) 
+    eps = np.quantile(abs(d2F),tolerance) 
     smalld2F = (abs(d2F) <= eps)
     
     # Find repititions in the mask "smalld2F" (i.e. ranges where d2F is constantly zero)
