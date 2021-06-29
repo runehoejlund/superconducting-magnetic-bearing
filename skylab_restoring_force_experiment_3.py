@@ -116,7 +116,6 @@ plt.plot(z,corrected_force,'-+')
 plt.xlabel('z [mm]')
 plt.ylabel('Restoring force [N]')
 plt.savefig('./plots/experiment-3-corrected-force.pdf')
-
 # %% Calculate Spring constant
 kz = np.mean(np.gradient(corrected_force[0:5],z[0:5]))
 print("stiffness kz = " + str(round(kz)) + " N/mm")

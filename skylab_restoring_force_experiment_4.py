@@ -102,9 +102,10 @@ plt.xlabel('time [s]')
 plt.ylabel('Corrected restoring force [N]')
 
 plt.figure()
-plt.plot(z,corrected_force,'-+')
+plt.plot(z,-corrected_force,'-+')
 plt.xlabel('z [mm]')
-plt.ylabel('Restoring force [N]')
+plt.ylabel('Lift force [N]')
+plt.title('Lift Force vs. Axial Displacement')
 plt.savefig('./plots/experiment-4-corrected-force.pdf')
 plt.savefig('./plots/experiment-4-corrected-force.png')
 
