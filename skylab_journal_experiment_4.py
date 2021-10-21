@@ -13,8 +13,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from find_plateaus import find_plateaus
 
-origData = pd.read_csv("./data/skylab_experiment_4_axial_pm_0,2mm.csv")
-origTimestamps = pd.read_csv("./data/skylab_experiment_4_axial_pm_0,2mm_timestamps.csv")
+origData = pd.read_csv("./data/journal-SMB/skylab_experiment_4_axial_pm_0,2mm.csv")
+origTimestamps = pd.read_csv("./data/journal-SMB/skylab_experiment_4_axial_pm_0,2mm_timestamps.csv")
 
 def getSeconds(timestring):
     tod = timestring.split(' ')[1].split(':')
