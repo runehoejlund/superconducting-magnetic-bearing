@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# %%
 """
 Skylab Experiments:
 Measurement of restoring force vs displacement
@@ -114,5 +115,6 @@ plt.savefig('./plots/experiment-5-corrected-force.pdf')
 plt.savefig('./plots/experiment-5-corrected-force.png')
 
 # %% Calculate Spring constant
-kx = np.mean(np.gradient(corrected_force[0:5],x[0:5]))
-print("stiffness kz = " + str(round(kx)) + " N/mm")
+kx = - np.mean(np.gradient(corrected_force[0:7],x[0:7]))
+print("stiffness kx = " + str(round(kx)) + " N/mm")
+print("stiffness kx = " + str(round(kx * 10)) + " N/(10 mm)")

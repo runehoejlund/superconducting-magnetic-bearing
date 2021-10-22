@@ -8,6 +8,7 @@ Previously this file was named: "skylab_restoring_force_experiment_4.py".
 Experiment 4:
 
 """
+# %%
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -32,7 +33,6 @@ def ymax():
 seconds = np.array([getSeconds(t) for t in origData.Time])
 t = seconds - seconds[0]
 time = t
-xForce = np.array(origData["x-force"])
 zForce = -np.array(origData["z-force"])
 
 
@@ -113,5 +113,6 @@ plt.savefig('./plots/experiment-4-corrected-force.pdf')
 plt.savefig('./plots/experiment-4-corrected-force.png')
 
 # %% Calculate Spring constant
-kz = np.mean(np.gradient(corrected_force[0:5],z[0:5]))
+kz = - np.mean(np.gradient(corrected_force[0:7],z[0:7]))
 print("stiffness kz = " + str(round(kz)) + " N/mm")
+print("stiffness kz = " + str(round(kz * 10)) + " N/(10 mm)")
