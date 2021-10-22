@@ -7,7 +7,7 @@ import matplotlib
 # from scipy.fftpack import fft
 
 fs = 1000 # sample frequency
-df = pd.read_csv('Damping_axial_succes_slightly_off_center_1.csv',header=0)
+df = pd.read_csv('Damping_disc_succes_slightly_off_center_1.csv', header=0)
 Y = df["y"].to_numpy()
 T = np.linspace(0, (len(Y)-1)/fs, len(Y))
 
@@ -39,7 +39,7 @@ plt.show()
 # %%
 # Plot the corrected data
 y = z - model.predict(t_in)
-plt.title('Radial Bearing oscillation')
+plt.title('Disc SMB Radial oscillation')
 plt.plot(t, y)
 plt.xlabel('time [s]')
 plt.ylabel('displacement [mm]')
@@ -54,7 +54,7 @@ t_one = t[start_one:end_one]
 y_one = y[start_one:end_one]
 
 plt.figure()
-plt.title('Radial Bearing oscillation - single oscillation')
+plt.title('Disc SMB Radial Oscillation - single oscillation')
 plt.plot(t_one, y_one)
 plt.xlabel('time [s]')
 plt.ylabel('displacement [mm]')
@@ -116,4 +116,3 @@ plt.show()
 
 
 # plt.show()
-# %%
