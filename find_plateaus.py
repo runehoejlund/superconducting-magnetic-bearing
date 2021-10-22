@@ -43,11 +43,12 @@ def find_plateaus(F, min_length=200, tolerance = 0.75, smoothing=25):
     
     # Find ranges where second derivative is zero
     # Values under eps are assumed to be zero.
-    eps = np.quantile(abs(d2F),tolerance) 
-    smalld2F = (abs(d2F) <= eps)
+    dEps = np.quantile(abs(dF), tolerance)
+    d2Eps = np.quantile(abs(d2F),tolerance) 
+    bigd2F = (abs(d2F) > d2Eps) | (abs(dF) > dEps)
     
     # Find repititions in the mask "smalld2F" (i.e. ranges where d2F is constantly zero)
-    p = zero_runs(np.diff(smalld2F))
+    p = zero_runs(bigd2F)
     
     # np.diff(p) gives the length of each range found.
     # only accept plateaus of min_length
