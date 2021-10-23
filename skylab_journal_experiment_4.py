@@ -62,7 +62,7 @@ plt.plot(time[start:end],d2F[start:end])
 plt.vlines(plateaus[(plateaus >= start) & (plateaus < end)]/100, ymin = ymin(), ymax = ymax(), colors='purple')
 plt.vlines(vp_start[(vp_start >= start/100) & (vp_start < end/100)], ymin = ymin(), ymax = ymax(), colors='g')
 plt.vlines(vp_end[(vp_end >= start/100) & (vp_end < end/100)], ymin = ymin(), ymax = ymax(), colors='r')
-
+plt.show()
 
 # %%
 plt.figure()
@@ -116,3 +116,24 @@ plt.savefig('./plots/experiment-4-corrected-force.png')
 kz = - np.mean(np.gradient(corrected_force[0:7],z[0:7]))
 print("stiffness kz = " + str(round(kz)) + " N/mm")
 print("stiffness kz = " + str(round(kz * 10)) + " N/(10 mm)")
+
+# Calcalate expected eigenfrequency
+m = 0.6 # Mass of bearing in kg
+omega_0 = np.sqrt(1000*kz/m)
+f_0 = omega_0/(2*np.pi)
+print("Expected eigenfrequency omega_0: " + str(omega_0) + " 1/s")
+print("Expected eigenfrequency f_0: " + str(f_0) + " Hz")
+
+# %% Calculate Energy dissipated
+hysteresis_start = np.argmin(z)
+delta_E = - np.trapz(corrected_force[hysteresis_start:],z[hysteresis_start:])
+print("Energy Dissipated: " + str(round(delta_E,2)) + " N * mm")
+
+# Calculate equivallent damping (Daniel J. Inmann, Engineering Vibrations Ch. 2.7)
+# NOTE: I'm not sure, we should use omega_0 - maybe it should be omega
+A = 0.2 # Amplitude = max(z)
+c_eq = delta_E/(np.pi*omega_0*(A**2))
+print("Equivallent damping. c_eq: " + str(round(c_eq,2)) + " N * s / mm")
+
+gamma_eq = 1000*c_eq/2*m
+print("Equivallent damping. gamma_eq: " + str(round(gamma_eq,2)) + " 1/s")

@@ -32,6 +32,7 @@ start_one = 24350
 end_one = start_one + N_one
 t_one = t[start_one:end_one] - t[start_one]
 y_one = y[start_one:end_one]
+y_one = y_one - np.mean(y_one)
 
 plt.figure()
 plt.title('Radial Bearing oscillation - single oscillation')
@@ -67,13 +68,18 @@ print("eigenfrequency: " + str(f_eig) + " Hz")
 
 from scipy.optimize import curve_fit
 
-def func(tt, f_0, g, phi, A, n):
-    return A * np.exp(- g * tt) * np.cos(2*np.pi*f_0 * (tt**n) - phi)
+def func(tt, f_0, g, phi, A):
+    return A * np.exp(- g * tt) * np.cos(2*np.pi*f_0 * tt - phi)
 
-p0 = (f_eig, 4, 0, np.max(y_one), 1.0)
-p, pcov = curve_fit(func, t_one[:int(N_one/20)], y_one[:int(N_one/20)])
+p0 = (f_eig, 4, 0, np.max(y_one))
+p, pcov = curve_fit(func, t_one[:int(N_one/4)], y_one[:int(N_one/4)])
+print(p)
+f_fitted, gamma_fitted, _, _ = p
+print("f_fitted: " + str(f_fitted) + " Hz")
+print("gamma_fitted: " + str(gamma_fitted) + " 1/s")
+
 plt.plot(t_one, y_one)
-plt.plot(t_one, func(t_one, *p0), 'r-', label='fit: f_0=%5.3f, g=%5.3f, phi=%5.3f, A=%5.3f, n=%5.3f' % tuple(p))
+plt.plot(t_one, func(t_one, *p), 'r-', label='fit: f_0=%5.3f, g=%5.3f, phi=%5.3f, A=%5.3f' % tuple(p))
 plt.show()
 # %%
 
@@ -123,4 +129,5 @@ plt.colorbar()
 
 
 # plt.show()
+
 # %%
