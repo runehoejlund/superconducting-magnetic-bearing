@@ -11,8 +11,14 @@ Experiment 4:
 # %%
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from find_plateaus import find_plateaus
+import matplotlib.pyplot as plt
+from matplotlib import rcParams
+rcParams.update({
+    "text.usetex": True,
+    "font.family": "serif",
+    "font.sans-serif": ["Computer Modern Roman"],
+    "font.size": 16})
 
 origData = pd.read_csv("./data/journal-SMB/skylab_experiment_4_axial_pm_0,2mm.csv")
 origTimestamps = pd.read_csv("./data/journal-SMB/skylab_experiment_4_axial_pm_0,2mm_timestamps.csv")
@@ -35,7 +41,6 @@ t = seconds - seconds[0]
 time = t
 zForce = -np.array(origData["z-force"])
 
-
 z = np.array(origTimestamps["z"])
 vp_start = np.array(origTimestamps["video_time_plateau_start"])
 vp_end = np.array(origTimestamps["video_time_plateau_end"])
@@ -52,37 +57,35 @@ for video_plateau in vp_start:
 
 force = np.array([np.mean(zForce[int(i):int(j)]) for (i,j) in plateaus])
 
-
 # %% Plots
 start = 0
 end = 5000
 
-plt.figure()
-plt.plot(time[start:end],d2F[start:end])
-plt.vlines(plateaus[(plateaus >= start) & (plateaus < end)]/100, ymin = ymin(), ymax = ymax(), colors='purple')
-plt.vlines(vp_start[(vp_start >= start/100) & (vp_start < end/100)], ymin = ymin(), ymax = ymax(), colors='g')
-plt.vlines(vp_end[(vp_end >= start/100) & (vp_end < end/100)], ymin = ymin(), ymax = ymax(), colors='r')
-
-# %%
-plt.figure()
-plt.plot(time[start:end], zForce[start:end])
+# plt.plot(time[start:end],d2F[start:end])
 # plt.vlines(plateaus[(plateaus >= start) & (plateaus < end)]/100, ymin = ymin(), ymax = ymax(), colors='purple')
 # plt.vlines(vp_start[(vp_start >= start/100) & (vp_start < end/100)], ymin = ymin(), ymax = ymax(), colors='g')
 # plt.vlines(vp_end[(vp_end >= start/100) & (vp_end < end/100)], ymin = ymin(), ymax = ymax(), colors='r')
-plt.xlabel('time [s]')
-plt.ylabel('Restoring force [N]')
+# plt.show()
 
 # %%
-hfont = {'fontname':'Serif'}
-f = plt.figure()
-plt.plot(z,force,'-o',linewidth=0.8, markersize=4, markerfacecolor='red',markeredgecolor='black')
-plt.grid()
-#plt.arrow(0,5, -0.02,2,fc="k", ec="k",head_width=0.01, head_length=0.5)
-f.get_axes()[0].annotate("", xy=(-0.02, 10.5), xytext=(0.03, 6), arrowprops=dict(arrowstyle="->"))
-f.get_axes()[0].annotate("", xy=(0.02, -5), xytext=(-0.03, -1), arrowprops=dict(arrowstyle="->"))
-plt.xlabel('z [mm]', **hfont)
-plt.ylabel('Restoring force [N]')
-plt.savefig('./plots/experiment-4-force.pdf')
+# plt.plot(time[start:end], zForce[start:end])
+# # plt.vlines(plateaus[(plateaus >= start) & (plateaus < end)]/100, ymin = ymin(), ymax = ymax(), colors='purple')
+# # plt.vlines(vp_start[(vp_start >= start/100) & (vp_start < end/100)], ymin = ymin(), ymax = ymax(), colors='g')
+# # plt.vlines(vp_end[(vp_end >= start/100) & (vp_end < end/100)], ymin = ymin(), ymax = ymax(), colors='r')
+# plt.xlabel('time [s]')
+# plt.ylabel('Restoring force [N]')
+# plt.show()
+
+# %%
+# plt.plot(z,force,'-o',linewidth=0.8, markersize=4, markerfacecolor='red',markeredgecolor='black')
+# plt.grid()
+# #plt.arrow(0,5, -0.02,2,fc="k", ec="k",head_width=0.01, head_length=0.5)
+# # f.get_axes()[0].annotate("", xy=(-0.02, 10.5), xytext=(0.03, 6), arrowprops=dict(arrowstyle="->"))
+# # f.get_axes()[0].annotate("", xy=(0.02, -5), xytext=(-0.03, -1), arrowprops=dict(arrowstyle="->"))
+# plt.xlabel('z [mm]', **hfont)
+# plt.ylabel('Restoring force [N]')
+# plt.savefig('./plots/experiment-4-force.pdf')
+# plt.show()
 
 # %%
 def correct_for_N_vaporisation(t, zForce):
@@ -95,30 +98,45 @@ def correct_for_N_vaporisation(t, zForce):
     framerate = 100 # frames per second
     a1 = framerate*N_loss_per_frame # Nitrogen force loss per second
     F_corr = -a1*t
-    plt.figure()
-    plt.plot(t,F_corr)
+    # plt.plot(t,F_corr)
     return zForce + F_corr
 
 corrected_zForce = correct_for_N_vaporisation(time, zForce)
 corrected_force = np.array([np.mean(corrected_zForce[int(i):int(j)]) for (i,j) in plateaus])
+corrected_force = corrected_force - corrected_force[0]
 
-plt.figure()
-plt.plot(time,corrected_zForce)
-plt.xlabel('time [s]')
-plt.ylabel('Corrected restoring force [N]')
+# plt.plot(time,corrected_zForce)
+# plt.xlabel('time [s]')
+# plt.ylabel('Corrected restoring force [N]')
+# plt.show()
 
-f = plt.figure(figsize=(6,4))
-plt.plot(z,corrected_force,'--x',linewidth=0.8, color = 'black', markersize=5, markerfacecolor='darkblue',markeredgecolor='k')
-plt.grid(color='lightgrey', linestyle='-', linewidth=0.1)
+# %%
+# Load Simulated Data
+df_sim = pd.read_csv("./data/journal-SMB-simulation/restoring_force.txt",header=7,sep="\s+")
+z_sim = np.array(df_sim['r'])
+force_sim = np.array(df_sim['Height'])
+
+# %%
+f = plt.figure(figsize=(6,6))
+plt.plot(z,corrected_force,
+    '--x', linewidth=0.8, color = 'black', markersize=5,markerfacecolor='darkblue',markeredgecolor='k',
+    label='Experimental')
+plt.plot(z_sim,force_sim,
+    '-',linewidth=1.2, color = 'royalblue', markersize=5, markerfacecolor='darkblue',markeredgecolor='k',
+    label='Simulated')
 f.get_axes()[0].annotate("", xy=(-0.02, 8.5), xytext=(0.03, 4), arrowprops=dict(arrowstyle="-|>"))
 #f.get_axes()[0].annotate("", xy=(-0.05, 5.2), xytext=(-0.01, 0.5), arrowprops=dict(arrowstyle="-|>"))
 f.get_axes()[0].annotate("", xy=(0.02, -6), xytext=(-0.03, -2), arrowprops=dict(arrowstyle="-|>"))
-plt.xlabel('z [mm]')
-plt.ylabel('Lift force [N]')
+
+plt.grid(color='lightgrey', linestyle='-', linewidth=0.1)
+plt.legend()
+plt.xlabel('$z$ [mm]')
+plt.ylabel('$F_z$ [N]')
 plt.ylim([-22, 22])
 plt.xlim([-0.25, 0.23])
-plt.xticks(np.arange(-0.2, 0.21, 0.05))
-plt.title('Lift Force vs. Axial Displacement')
+plt.xticks(np.arange(-0.2, 0.21, 0.05), rotation=30, ha="right")
+plt.title('Lift Force of Journal SMB Rotor')
+plt.tight_layout()
 plt.savefig('./plots/experiment-4-corrected-force.pdf')
 plt.savefig('./plots/experiment-4-corrected-force.png')
 plt.show()

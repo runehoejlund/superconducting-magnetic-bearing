@@ -42,7 +42,7 @@ y_one = y[start_one:end_one]
 y_one = y_one - np.mean(y_one)
 
 f = np.fft.fft(y_one)
-freq = np.fft.fftfreq(t_one.shape[-1], d=1/fs)
+freq = np.fft.fftfreq(t_one.shape[-1], d=1/fs)  
 
 # %%
 # Find peaks
