@@ -20,6 +20,10 @@ rcParams.update({
     "font.sans-serif": ["Computer Modern Roman"],
     "font.size": 16})
 
+axis = 'r'
+m = 0.752
+filename = 'force-journal-r'
+
 origData = pd.read_csv("./data/journal-SMB/skylab_experiment_5_radial_pm_0,2mm.csv")
 origTimestamps = pd.read_csv("./data/journal-SMB/skylab_experiment_5_radial_pm_0,2mm_timestamps.csv")
 
@@ -125,8 +129,8 @@ plt.xlim([-0.25, 0.23])
 plt.xticks(np.arange(-0.2, 0.21, 0.05), rotation=30, ha="right")
 plt.title('Radial Force of Journal SMB Rotor')
 plt.tight_layout()
-plt.savefig('./plots/experiment-5-corrected-force.pdf')
-plt.savefig('./plots/experiment-5-corrected-force.png')
+plt.savefig('./plots/' + filename + '-corrected.pdf')
+plt.savefig('./plots/' + filename + '-corrected.png')
 plt.show()
 
 # %% Calculate Spring constant
@@ -136,21 +140,30 @@ print("stiffness kx = " + str(round(kx * 10)) + " N/(10 mm)")
 
 # Calcalate expected eigenfrequency
 m = 0.6 # Mass of bearing in kg
-omega_0 = np.sqrt(1000*kz/m)
+omega_0 = np.sqrt(1000*kx/m)
 f_0 = omega_0/(2*np.pi)
 print("Expected eigenfrequency omega_0: " + str(omega_0) + " 1/s")
 print("Expected eigenfrequency f_0: " + str(f_0) + " Hz")
 
 # %% Calculate Energy dissipated
-hysteresis_start = np.argmin(z)
-delta_E = - np.trapz(corrected_force[hysteresis_start:],z[hysteresis_start:])
+hysteresis_start = np.argmin(x)
+delta_E = - np.trapz(corrected_force[hysteresis_start:],x[hysteresis_start:])
 print("Energy Dissipated: " + str(round(delta_E,2)) + " N * mm")
 
 # Calculate equivallent damping (Daniel J. Inmann, Engineering Vibrations Ch. 2.7)
 # NOTE: I'm not sure, we should use omega_0 - maybe it should be omega
 A = 0.2 # Amplitude = max(z)
-c_eq = delta_E/(np.pi*omega_0*(A**2))
-print("Equivallent damping. c_eq: " + str(round(c_eq,2)) + " N * s / mm")
+c_eq = 1000* delta_E/(np.pi*omega_0*(A**2))
+print("Equivallent damping. c_eq: " + str(round(c_eq,2)) + " N * s / m")
 
-gamma_eq = 1000*c_eq/2*m
+gamma_eq = c_eq/2*m
 print("Equivallent damping. gamma_eq: " + str(round(gamma_eq,2)) + " 1/s")
+
+zeta_eq = c_eq/(2*np.sqrt(kx*m))
+print("Equivallent damping. zeta_eq: " + str(round(zeta_eq,2)))
+
+# %%
+modal_df = pd.DataFrame(
+    [np.round([kx, f_0, omega_0, gamma_eq, zeta_eq, c_eq],3)],
+    columns=['k_' + axis + ' [kN/m]', 'f_0 [Hz]', 'omega_0 [1/s]', 'gamma_eq [1/s]', 'zeta_eq', 'c_eq [kg/s]'])
+modal_df.to_csv('./plots/' + filename + '.csv')
