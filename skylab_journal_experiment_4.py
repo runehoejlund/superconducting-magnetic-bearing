@@ -177,5 +177,5 @@ print("Equivallent damping. zeta_eq: " + str(round(zeta_eq,2)))
 # %%
 modal_df = pd.DataFrame(
     [np.round([kz, f_0, omega_0, gamma_eq, zeta_eq, c_eq],3)],
-    columns=['k_' + axis + ' [N/m]', 'f_0 [Hz]', 'omega_0 [1/s]', 'gamma_eq [1/s]', 'zeta_eq', 'c_eq [kg/s]'])
+    columns=['k_' + axis + ' [kN/m]', 'f_0 [Hz]', 'omega_0 [1/s]', 'gamma_eq [1/s]', 'zeta_eq', 'c_eq [kg/s]'])
 modal_df.to_csv('./plots/' + filename + '.csv')
